@@ -14,16 +14,17 @@ import org.scalajs.dom.ext.KeyCode
 
 
 case class Player(x:Int, y:Int, dir:String, len:Int)
+case class Fruit(x:Int, y:Int)
 
 
 object SnakeMain {
   
    //random spawn site
-   val randX = scala.util.Random.nextInt(400)
-   val randY = scala.util.Random.nextInt(400)
+   val r = scala.util.Random
 
    //global vals
-   var player = Player(randX,randY,"left",3)
+   var player = Player(r.nextInt(400),r.nextInt(400),"left",3)
+   var fruit = Fruit(r.nextInt(400),r.nextInt(400))
    var dead = false
    val canvas = $("#snakeCanvas")(0).asInstanceOf[html.Canvas]
    val gc = canvas.getContext("2d").
@@ -39,6 +40,7 @@ object SnakeMain {
         if(!dead){
            movePlayer()
            checkHit()
+           eatFruit()
            update()
         }
      },40.0)
@@ -59,6 +61,8 @@ object SnakeMain {
        gc.clearRect(0,0,canvas.width,canvas.height)
        gc.strokeRect(0,0,canvas.width,canvas.height)
        drawSnake()
+       //draw fruit
+       gc.fillRect(fruit.x,fruit.y,10,10)
      }
      else {
        gc.fillStyle = "#000000"
@@ -104,9 +108,19 @@ object SnakeMain {
 
    def checkHit():Boolean = {
      //hits border
-     if(player.x == 0 || player.x == canvas.width || 
-        player.y == 0 || player.y == canvas.height) dead = true
+     if(player.x <= 0 || player.x >= canvas.width || 
+        player.y <= 0 || player.y >= canvas.height) dead = true
      return dead
    }
+
+   def eatFruit() = {
+     if ((player.x < fruit.x && (player.x+20) > fruit.x) &&
+         (player.y < fruit.y && (player.y+20) > fruit.y)) {
+        fruit = Fruit(r.nextInt(400),r.nextInt(400))
+        player = Player(player.x,player.y,player.dir,player.len+2)
+     }
+   }
+
+
 
 }
