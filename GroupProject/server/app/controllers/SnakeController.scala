@@ -16,6 +16,19 @@ import java.util.concurrent.atomic.AtomicReference
 
 class SnakeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
 
+  def loginPage = Action { implicit request =>
+    Ok(views.html.snakeLogin())
+  }
+  
+  def logout = Action { implicit request =>
+    //TODO: logout stuff with session variables!!
+    Ok(views.html.snakeLogin())
+  }
+  
+  def highscores = Action { implicit request =>
+    Ok(views.html.snakeHighscore())
+  }
+  
   def view = Action { implicit request =>
      Ok(views.html.snakeCanvas())
   }

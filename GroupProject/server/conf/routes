@@ -4,11 +4,11 @@
 
 
 ## Snake Game!!!
-
+GET		/snakeGameMain				controllers.SnakeController.loginPage
+GET		/snakeHighscore				controllers.SnakeController.highscores
+GET 	/newSession					controllers.SnakeController.logout
 GET     /snakeGame                  controllers.SnakeController.view
 GET     /snakeCanvas                controllers.SnakeController.snakeCanvas
-
-
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index

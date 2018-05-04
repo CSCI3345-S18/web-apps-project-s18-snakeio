@@ -1,0 +1,26 @@
+@* snakeHighscore Template File *@
+@()(implicit request: RequestHeader)
+
+@main("Snecc Highscore") {
+	<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/SnakeStyle.css")">
+	<head>
+		<h2>Snake.io</h2>
+	</head>
+	
+	<body>
+		<div>&nbsp</div>
+		<h2>All-Time High Scores</h2>
+		
+		<div>&nbsp</div>
+		
+		<form id="serverRoom" action="@routes.SnakeController.view" method="GET">
+			<button type="submit">Join A Game</button>
+		</form>
+		
+		<div>&nbsp</div>
+		
+		<form id="logout" action="@routes.SnakeController.logout" method="GET">
+			<button type="submit">Logout</button>
+		</form>
+	</body>
+}

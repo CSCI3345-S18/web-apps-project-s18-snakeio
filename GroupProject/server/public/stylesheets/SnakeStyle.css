@@ -1,0 +1,22 @@
+@CHARSET "UTF-8";
+
+*, head,body {
+	font-family:"Courier New", Courier, monospace;
+	color:orange;
+	background-color: black;
+}
+
+
+/*
+.column {
+    float: left;
+    width: 50%;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+*/
+
