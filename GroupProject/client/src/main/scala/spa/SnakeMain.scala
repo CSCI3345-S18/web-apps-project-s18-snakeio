@@ -11,9 +11,10 @@ import scala.scalajs.js.annotation.JSGlobal
 import scala.scalajs.js.annotation.JSExport
 import scala.scalajs.js._
 import org.scalajs.dom.ext.KeyCode
+import scala.collection.mutable.Queue
 
 
-case class Player(x:Int, y:Int, dir:String, len:Int)
+case class Player(dir:String, var body:Queue[(Int,Int)])
 case class Fruit(x:Int, y:Int)
 
 
@@ -23,7 +24,10 @@ object SnakeMain {
    val r = scala.util.Random
 
    //global vals
-   var player = Player(r.nextInt(400),r.nextInt(400),"left",3)
+   var x = 5*r.nextInt(80) //400/5 = 80
+   var y = 5*r.nextInt(80)
+   var tempQue = Queue((x,y),(x+5,y),(x+10,y))
+   var player = Player("left", tempQue)
    var fruit = Fruit(r.nextInt(400),r.nextInt(400))
    var dead = false
    val canvas = $("#snakeCanvas")(0).asInstanceOf[html.Canvas]
@@ -37,7 +41,9 @@ object SnakeMain {
 
      //interval
      dom.window.setInterval(() => {
+        println("Dead status = " + dead)
         if(!dead){
+           println("Player Direction: " + player.dir);
            movePlayer()
            checkHit()
            eatFruit()
@@ -72,7 +78,14 @@ object SnakeMain {
 
    //draws snake
    def drawSnake() = {
-     gc.fillRect(player.x,player.y,20,20)
+     //var playerCopy = player
+     for(i <- 0 until player.body.length){
+       //var temp = playerCopy.body.dequeue()
+       var temp = player.body.get(i).get
+       println("Rectangle at: " +temp._1 + " " + temp._2);
+       gc.fillRect(temp._1, temp._2, 4,4)
+     }
+     /*gc.fillRect(player.x,player.y,5,5)
      var newX = player.x+5
      var newY = player.y+5
 
@@ -82,13 +95,23 @@ object SnakeMain {
         if(player.dir == "up") newY = newY+12
         if(player.dir == "down")newY = newY-12
         gc.fillRect(newX,newY,10,10)
-     }
+     }*/
      gc.fill()
    }
 
    //continuous moves snake
    def movePlayer() = {
-     var x = player.x
+     var dir = player.dir
+     var px = player.body.last._1
+     var py = player.body.last._2
+     if(dir == "right") player.body.enqueue((px+5,py))
+     if(dir == "left") player.body.enqueue((px-5,py))
+     if(dir == "up") player.body.enqueue((px,py-5))
+     if(dir == "down") player.body.enqueue((px,py+5))
+     
+     player.body.dequeue();
+     
+     /*var x = player.x
      var y = player.y
      var dir = player.dir
      var len = player.len
@@ -96,28 +119,28 @@ object SnakeMain {
      if(dir == "right") player = Player(x+5,y,dir,len)
      if(dir == "left") player = Player(x-5,y,dir,len)
      if(dir == "up") player = Player(x,y-5,dir,len)
-     if(dir == "down") player = Player(x,y+5,dir,len)
+     if(dir == "down") player = Player(x,y+5,dir,len)*/
      update()
    }
 
    //changes direction of snake
-   def goRight() = player = Player(player.x, player.y,"right",player.len)
-   def goLeft() = player = Player(player.x, player.y,"left",player.len)
-   def goUp() = player = Player(player.x, player.y,"up",player.len)
-   def goDown() = player = Player(player.x, player.y,"down",player.len)
+   def goRight() = player = Player("right", player.body)
+   def goLeft() = player = Player("left", player.body)
+   def goUp() = player = Player("up", player.body)
+   def goDown() = player = Player("down", player.body)
 
    def checkHit():Boolean = {
      //hits border
-     if(player.x <= 0 || player.x >= canvas.width || 
-        player.y <= 0 || player.y >= canvas.height) dead = true
+     if(player.body.front._1 <= 0 || player.body.front._1 >= canvas.width || 
+        player.body.front._2 <= 0 || player.body.front._2 >= canvas.height) dead = true
      return dead
    }
 
    def eatFruit() = {
-     if ((player.x < fruit.x && (player.x+20) > fruit.x) &&
-         (player.y < fruit.y && (player.y+20) > fruit.y)) {
+     if ((player.body.front._1 < fruit.x && (player.body.front._1+20) > fruit.x) &&
+         (player.body.front._2 < fruit.y && (player.body.front._2+20) > fruit.y)) {
         fruit = Fruit(r.nextInt(400),r.nextInt(400))
-        player = Player(player.x,player.y,player.dir,player.len+2)
+        player.body.enqueue((player.body.last._1, player.body.last._2 + 5));
      }
    }
 
