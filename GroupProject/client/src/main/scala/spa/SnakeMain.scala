@@ -17,7 +17,6 @@ import scala.collection.mutable.Queue
 case class Player(dir:String, var body:Queue[(Int,Int)])
 case class Fruit(x:Int, y:Int)
 
-
 object SnakeMain {
   
    //random spawn site
@@ -29,10 +28,13 @@ object SnakeMain {
    var tempQue = Queue((x,y),(x+5,y),(x+10,y))
    var player = Player("left", tempQue)
    var fruit = Fruit(r.nextInt(400),r.nextInt(400))
+   var score = 0
    var dead = false
    val canvas = $("#snakeCanvas")(0).asInstanceOf[html.Canvas]
    val gc = canvas.getContext("2d").
          asInstanceOf[dom.CanvasRenderingContext2D]
+
+   println(player)
 
    def main():Unit = {
      // Setup
@@ -40,14 +42,15 @@ object SnakeMain {
      drawSnake()
 
      //interval
+     var counter = 0
      dom.window.setInterval(() => {
-        println("Dead status = " + dead)
         if(!dead){
-           println("Player Direction: " + player.dir);
+           counter += 1
            movePlayer()
            checkHit()
            eatFruit()
            update()
+           if(counter%50 == 0) score += 20
         }
      },40.0)
 
@@ -68,7 +71,8 @@ object SnakeMain {
        gc.strokeRect(0,0,canvas.width,canvas.height)
        drawSnake()
        //draw fruit
-       gc.fillRect(fruit.x,fruit.y,10,10)
+       gc.fillStyle = "#008000"
+       gc.fillRect(fruit.x,fruit.y,5,5)
      }
      else {
        gc.fillStyle = "#000000"
@@ -78,24 +82,11 @@ object SnakeMain {
 
    //draws snake
    def drawSnake() = {
-     //var playerCopy = player
+     gc.fillStyle = "#008080"
      for(i <- 0 until player.body.length){
-       //var temp = playerCopy.body.dequeue()
        var temp = player.body.get(i).get
-       println("Rectangle at: " +temp._1 + " " + temp._2);
        gc.fillRect(temp._1, temp._2, 4,4)
      }
-     /*gc.fillRect(player.x,player.y,5,5)
-     var newX = player.x+5
-     var newY = player.y+5
-
-     for(i <- 1 to player.len) {
-        if(player.dir == "right") newX = newX-12
-        if(player.dir == "left") newX = newX+12
-        if(player.dir == "up") newY = newY+12
-        if(player.dir == "down")newY = newY-12
-        gc.fillRect(newX,newY,10,10)
-     }*/
      gc.fill()
    }
 
@@ -109,17 +100,7 @@ object SnakeMain {
      if(dir == "up") player.body.enqueue((px,py-5))
      if(dir == "down") player.body.enqueue((px,py+5))
      
-     player.body.dequeue();
-     
-     /*var x = player.x
-     var y = player.y
-     var dir = player.dir
-     var len = player.len
-
-     if(dir == "right") player = Player(x+5,y,dir,len)
-     if(dir == "left") player = Player(x-5,y,dir,len)
-     if(dir == "up") player = Player(x,y-5,dir,len)
-     if(dir == "down") player = Player(x,y+5,dir,len)*/
+     player.body.dequeue()
      update()
    }
 
@@ -133,14 +114,17 @@ object SnakeMain {
      //hits border
      if(player.body.front._1 <= 0 || player.body.front._1 >= canvas.width || 
         player.body.front._2 <= 0 || player.body.front._2 >= canvas.height) dead = true
+	    
+      player.body.last._1
      return dead
    }
 
    def eatFruit() = {
-     if ((player.body.front._1 < fruit.x && (player.body.front._1+20) > fruit.x) &&
-         (player.body.front._2 < fruit.y && (player.body.front._2+20) > fruit.y)) {
+     if ((player.body.front._1-3 <= fruit.x && (player.body.front._1+5) >= fruit.x) &&
+         (player.body.front._2-3 <= fruit.y && (player.body.front._2+5) >= fruit.y)) {
         fruit = Fruit(r.nextInt(400),r.nextInt(400))
-        player.body.enqueue((player.body.last._1, player.body.last._2 + 5));
+        player.body.enqueue((player.body.last._1, player.body.last._2 + 5))
+        score += 500
      }
    }
 
