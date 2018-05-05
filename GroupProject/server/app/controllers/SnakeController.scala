@@ -12,6 +12,9 @@ import play.api.libs.json.Reads._
 import play.api.libs.functional.syntax._
 import java.util.concurrent.atomic.AtomicReference
 
+case class NewUser(userID: Int, username: String, password: String)
+case class Login(userID: Int, username: String, password: String)
+case class Score(scoreID: Int, userID: Int, score: Int)
 
 
 class SnakeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
