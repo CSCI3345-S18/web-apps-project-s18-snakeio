@@ -26,19 +26,19 @@ class SnakeActor (out: ActorRef, manager: ActorRef) extends Actor {
       "body" -> snake.body)
   }
 
-  val snakeReads: Reads[Snake] = (
-    (JsPath \ "dir").read[String] and
-    (JsPath \ "body").read[Array[(Int,Int)]]
-  )(Snake.apply _)
+//  val snakeReads: Reads[Snake] = (
+//    (JsPath \ "dir").read[String] and
+//    (JsPath \ "body").read[Array[(Int,Int)]]
+//  )(Snake.apply _)
  
 
   
   def receive = {
     case input: String =>
       println("socket got input: " + input)
-      manager ! SnakeManager.UpdateSnakes(input)
-    case ChatMessage(msg) => 
-      out ! msg
+      manager ! SnakeManager.UpdateDirections(input)
+    case SnakeLocations(info) => 
+      out ! info
     case m => 
       println("Got unknown message: "+m)
   }
@@ -47,5 +47,5 @@ class SnakeActor (out: ActorRef, manager: ActorRef) extends Actor {
 object SnakeActor {
   def props(out: ActorRef, manager: ActorRef) = Props(new SnakeActor(out, manager))
   
-  case class ChatMessage(msg: String)
+  case class SnakeLocations(info: String)
 }

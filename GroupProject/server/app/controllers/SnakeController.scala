@@ -42,6 +42,7 @@ class SnakeController @Inject()(cc: ControllerComponents) (implicit system: Acto
   //mcc: MessagesControllerComponents)(implicit ec: ExecutionContext, system: ActorSystem)
   //extends MessagesAbstractController(mcc) with HasDatabaseConfigProvider[JdbcProfile]{
   
+
   val snakeManager = system.actorOf(SnakeManager.props)
   
   def socket = WebSocket.accept[String, String] { request =>
