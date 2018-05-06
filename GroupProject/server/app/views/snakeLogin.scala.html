@@ -1,5 +1,5 @@
 @* snakeLogin Template File *@
-@()(implicit request: RequestHeader)
+@(UserForm: Form[NewUser],LoginForm:Form[Login])(implicit request: MessagesRequestHeader, flash:Flash)
 
 @main("Snecc out"){
 
@@ -11,25 +11,19 @@
 	<body>
 		<div>&nbsp</div>
 		<h2>Login In:</h2>
-		<form id="login" action="@routes.SnakeController.view" method="GET">
-			Username: <input type="user" name="username">
-			<br>
-			Password: <input type="password" name="password">
-			<br>
-			<button type="submit">Login</button><br>
-		</form>
-	
+		@helper.form(action = helper.CSRF(routes.SnakeController.login)) {
+	  @helper.inputText(LoginForm("username"))
+	  @helper.inputPassword(LoginForm("password"))
+	  <input type="submit" value="Submit">
+	}
 		<div>&nbsp</div>
 	
 		<h2>Don't have an account? Register:</h2>
-		<form id="register" action="@routes.SnakeController.view" method="GET">
-			Username: <input type="user" name="newUser">
-			<br>
-			Password: <input type="password" name="newPass">
-			<br>
-			<button type="submit">Register</button><br>
-		</form>
-	
+		@helper.form(action = helper.CSRF(routes.SnakeController.addUser)) {
+	 	@helper.inputText(UserForm("username"))
+	  	@helper.inputPassword(UserForm("password"))
+	  	<input type="submit" value="Submit">
+	}
 		<div>&nbsp</div>
 	
 		<form id="highscore" action="@routes.SnakeController.highscores" method="GET">
