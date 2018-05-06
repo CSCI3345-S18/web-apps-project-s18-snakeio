@@ -38,19 +38,21 @@ object SnakeMain {
    val gc = canvas.getContext("2d").
          asInstanceOf[dom.CanvasRenderingContext2D]
 
-   println(player)
 
    def main():Unit = {
      
      //sockets
-     socket.onopen = { (e: dom.Event) =>
+     //socket.onopen = { (e: dom.Event) =>
+     socket.addEventListener("open",(event: Event) => {
        socket.send("Hello! Socket opened!")
-     }
+     })
      
-     socket.onmessage = { (e: dom.MessageEvent) =>
-       val snakeData = JSON.parse(e.data.toString())
+     //socket.onmessage = { (e: dom.MessageEvent) =>
+     socket.addEventListener("message",(event: MessageEvent) => {
+       println("got message")
+       //val snakeData = JSON.parse(e.data.toString())
        //Here we call draw snake
-     }
+     })
      
      
      // Setup
@@ -61,6 +63,12 @@ object SnakeMain {
      var counter = 0
      dom.window.setInterval(() => {
         if(!dead){
+           // sending snake JSON to Actor
+           val s = js.Dynamic.literal(dir = player.dir, body = player.body)
+           println("s: " + s)
+           socket.send(JSON.stringify(s))
+           println("sending " + JSON.stringify(s))
+
            counter += 1
            movePlayer()
            checkHit()

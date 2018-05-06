@@ -4,9 +4,13 @@ import akka.actor.Actor
 import akka.actor.Props
 import akka.actor.ActorRef
 
+
+case class Snake(dir:String, var body:Array[(Int,Int)])
+case class Fruit(x:Int, y:Int)
+
 class SnakeManager extends Actor {
   import SnakeManager._
-  
+
   private var players = List[ActorRef]()
   private var name = ""
   
