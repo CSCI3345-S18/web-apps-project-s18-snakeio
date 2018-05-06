@@ -55,14 +55,18 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
     def login = Action.async { implicit request=>
     LoginForm.bindFromRequest().fold(
       formWithErrors=>{
+        println("heleaux")
         val userFuture = SnakeGameQueries.allUsers(db)
         userFuture.map(users => BadRequest(views.html.snakeLogin(NewUserForm,formWithErrors)))
       },
       loggingin =>{
+        println("help me")
          val loginFuture = SnakeGameQueries.checkCred(loggingin,db)
           loginFuture.map{ cnt =>
           if(cnt == true){
+            println("hello")
             Redirect(routes.SnakeController.view()).flashing("message" -> "Login successful.")
+            
           }
           else Redirect(routes.DatabaseController.loginPage()).flashing("message" -> "Failed to login.")
           
