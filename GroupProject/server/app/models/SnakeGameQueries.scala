@@ -12,19 +12,19 @@ case class HighScore(scoreID: Int, userID: Int, score: Int)
 object SnakeGameQueries {
   import Tables._
   def allUsers(db:Database)(implicit ec:ExecutionContext):Future[Seq[User]] = {
-    db.run(users.result)
+    db.run(userAccounts.result)
   }
 
   def addUser(nu: NewUser, db: Database)(implicit ec: ExecutionContext): Future[Int] = {
     db.run {
-      users += User(nu.userID, nu.username, nu.password)
+      userAccounts += User(0, nu.username, nu.password)
     }
   }
 
   def checkCred(user: Login, db: Database)(implicit ec:ExecutionContext): Future[Boolean] = {
     // TODO: check if user inputed correct login creds
     db.run {
-      users.filter(_.username === user.username).filter(_.password === user.password).exists.result
+      userAccounts.filter(_.username === user.username).filter(_.password === user.password).exists.result
     }
   }
  /* 

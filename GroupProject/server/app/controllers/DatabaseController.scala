@@ -56,7 +56,7 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
     LoginForm.bindFromRequest().fold(
       formWithErrors=>{
         val userFuture = SnakeGameQueries.allUsers(db)
-        userFuture.map(users => Ok(views.html.snakeLogin(NewUserForm,formWithErrors)))
+        userFuture.map(users => BadRequest(views.html.snakeLogin(NewUserForm,formWithErrors)))
       },
       loggingin =>{
          val loginFuture = SnakeGameQueries.checkCred(loggingin,db)
@@ -71,10 +71,8 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
       }
     )
   }
-      def highscores = Action { implicit request =>
-    Ok(views.html.snakeHighscore())
-  }
-    def addUser = Action.async{ implicit request =>
+  
+     def addUser = Action.async{ implicit request =>
     NewUserForm.bindFromRequest().fold(
       formWithErrors=>{
         val userFuture = SnakeGameQueries.allUsers(db)
@@ -93,6 +91,10 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
       }
     )
   }
+      def highscores = Action { implicit request =>
+    Ok(views.html.snakeHighscore())
+  }
+ 
   
   def loginPage = Action { implicit request =>
     Ok(views.html.snakeLogin(NewUserForm,LoginForm))

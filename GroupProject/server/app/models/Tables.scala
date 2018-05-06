@@ -6,8 +6,8 @@ object Tables {
   
   class Users(tag: Tag) extends Table[User](tag, "userAccounts") {
     def userID = column[Int]("userID", O.PrimaryKey)
-    def username = column[String]("user")
-    def password = column[String]("pass")
+    def username = column[String]("username")
+    def password = column[String]("password")
     def * = (userID, username, password) <> (User.tupled, User.unapply)
   }
   
@@ -18,6 +18,6 @@ object Tables {
     def * = (scoreID, userID, score) <> (HighScore.tupled, HighScore.unapply)
   }
   
-  val users = TableQuery[Users]
+  val userAccounts = TableQuery[Users]
   val highscores = TableQuery[HighScores]
 }
