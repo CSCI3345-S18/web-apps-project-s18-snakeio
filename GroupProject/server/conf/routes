@@ -4,13 +4,15 @@
 
 
 ## Snake Game!!!
-GET		/snakeGameMain				controllers.SnakeController.loginPage
-POST 	/snakeGameMain				controllers.SnakeController.addUser
-GET		/loggingin					controllers.SnakeController.login
-GET		/snakeHighscore				controllers.SnakeController.highscores
-GET 	/newSession					controllers.SnakeController.logout
+GET		/snakeGameMain				controllers.DatabaseController.loginPage
+POST 	/snakeGameMain				controllers.DatabaseController.addUser
+GET		/loggingin					controllers.DatabaseController.login
+GET		/snakeHighscore				controllers.DatabaseController.highscores
+GET 	/newSession					controllers.DatabaseController.logout
 GET     /snakeGame                  controllers.SnakeController.view
 GET     /snakeCanvas                controllers.SnakeController.snakeCanvas
+
+GET		/socket						controllers.SnakeController.socket
 
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index

@@ -18,9 +18,9 @@ lazy val server = (project in file("server")).settings(commonSettings).settings(
 
     "com.typesafe.play" %% "play-slick" % "3.0.3",
     "mysql" % "mysql-connector-java" % "6.0.6",
-    "com.typesafe.slick" %% "slick-codegen" % "3.2.3"
-    "com.h2database" % "h2" % "1.4.196"
-	"com.typesafe.play" %% "play-slick" % "3.0.3"
+    "com.typesafe.slick" %% "slick-codegen" % "3.2.3",
+    "com.h2database" % "h2" % "1.4.196",
+	"com.typesafe.play" %% "play-slick" % "3.0.3",
 	"mysql" % "mysql-connector-java" % "6.0.6"
   ),
   // Compile the project before generating Eclipse files, so that generated .scala or .class files for views and routes are present

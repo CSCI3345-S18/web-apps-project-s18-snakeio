@@ -19,7 +19,7 @@ case class Fruit(x:Int, y:Int)
 
 object SnakeMain {
   
-   val socket = new dom.WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/snakeSock")
+   val socket = new dom.WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/socket")
   
    var direction = "right"
    

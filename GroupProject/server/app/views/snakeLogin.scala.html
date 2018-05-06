@@ -11,7 +11,7 @@
 	<body>
 		<div>&nbsp</div>
 		<h2>Login In:</h2>
-		@helper.form(action = helper.CSRF(routes.SnakeController.login)) {
+		@helper.form(action = helper.CSRF(routes.DatabaseController.login)) {
 	  @helper.inputText(LoginForm("username"))
 	  @helper.inputPassword(LoginForm("password"))
 	  <input type="submit" value="Submit">
@@ -19,14 +19,14 @@
 		<div>&nbsp</div>
 	
 		<h2>Don't have an account? Register:</h2>
-		@helper.form(action = helper.CSRF(routes.SnakeController.addUser)) {
+		@helper.form(action = helper.CSRF(routes.DatabaseController.addUser)) {
 	 	@helper.inputText(UserForm("username"))
 	  	@helper.inputPassword(UserForm("password"))
 	  	<input type="submit" value="Submit">
 	}
 		<div>&nbsp</div>
 	
-		<form id="highscore" action="@routes.SnakeController.highscores" method="GET">
+		<form id="highscore" action="@routes.DatabaseController.highscores" method="GET">
 			<button type="submit">View All-Time High Scores</button>
 		</form>
 	</body>

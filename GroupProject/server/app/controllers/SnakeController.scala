@@ -22,84 +22,32 @@ import slick.jdbc.JdbcProfile
 import slick.jdbc.JdbcCapabilities
 import slick.jdbc.MySQLProfile.api._
 import models.SnakeGameQueries
+import akka.actor.ActorSystem
+import akka.stream.Materializer
+import javax.inject.Inject
+import play.api.libs.streams.ActorFlow
+import play.api.mvc.AbstractController
+import play.api.mvc.ControllerComponents
+import play.api.mvc.WebSocket
+import actors.SnakeActor
+import actors.SnakeManager
 
 case class NewUser(userID: Int, username: String, password: String)
 case class Login(userID: Int, username: String, password: String)
 case class Score(scoreID: Int, userID: Int, score: Int)
 
 
-class SnakeController @Inject()(
-protected val dbConfigProvider: DatabaseConfigProvider,
-  mcc: MessagesControllerComponents)(implicit ec: ExecutionContext)
-  extends MessagesAbstractController(mcc) with HasDatabaseConfigProvider[JdbcProfile]{
+class SnakeController @Inject()(cc: ControllerComponents) (implicit system: ActorSystem, mat: Materializer) extends AbstractController(cc){
+//protected val dbConfigProvider: DatabaseConfigProvider,
+  //mcc: MessagesControllerComponents)(implicit ec: ExecutionContext, system: ActorSystem)
+  //extends MessagesAbstractController(mcc) with HasDatabaseConfigProvider[JdbcProfile]{
   
-  val NewUserForm=Form(
-      mapping(
-          "userID" -> number,
-          "username" -> nonEmptyText,
-          "password" -> nonEmptyText
-        )(NewUser.apply)(NewUser.unapply)
-      )
+  val snakeManager = system.actorOf(SnakeManager.props)
   
-      val LoginForm=Form(
-      mapping (
-          "userID" -> number,
-        "username" -> nonEmptyText,
-         "password" -> nonEmptyText
-      )(Login.apply)(Login.unapply)  
-    )
-      
-    def login = Action.async { implicit request=>
-    LoginForm.bindFromRequest().fold(
-      formWithErrors=>{
-        val userFuture = SnakeGameQueries.allUsers(db)
-        userFuture.map(users => Ok(views.html.snakeLogin(NewUserForm,formWithErrors)))
-      },
-      loggingin =>{
-         val loginFuture = SnakeGameQueries.checkCred(loggingin,db)
-          loginFuture.map{ cnt =>
-          if(cnt == true){
-            Redirect(routes.SnakeController.view()).flashing("message" -> "Login successful.")
-          }
-          else Redirect(routes.SnakeController.loginPage()).flashing("message" -> "Failed to login.")
-          
-        }
-        
-      }
-    )
-  }
-    
-    def addUser = Action.async{ implicit request =>
-    NewUserForm.bindFromRequest().fold(
-      formWithErrors=>{
-        val userFuture = SnakeGameQueries.allUsers(db)
-        userFuture.map(users => BadRequest(views.html.snakeLogin(formWithErrors, LoginForm)))
-      },
-      newUser =>{
-         val addFuture = SnakeGameQueries.addUser(newUser,db)
-        addFuture.map{ cnt =>
-            if(cnt == 1){Redirect(routes.SnakeController.loginPage()).flashing("message" -> "New user added.")
-                      
-          }
-          else Redirect(routes.SnakeController.loginPage()).flashing("message" -> "Failed to add new user.")
-          
-        }
-        
-      }
-    )
-  }
-  
-  def loginPage = Action { implicit request =>
-    Ok(views.html.snakeLogin(NewUserForm,LoginForm))
-  }
-  
-  def logout = Action { implicit request =>
-    //TODO: logout stuff with session variables!!
-    Ok(views.html.snakeLogin(NewUserForm,LoginForm))
-  }
-  
-  def highscores = Action { implicit request =>
-    Ok(views.html.snakeHighscore())
+  def socket = WebSocket.accept[String, String] { request =>
+    ActorFlow.actorRef { out =>
+      SnakeActor.props(out, snakeManager)
+    }
   }
   
   def view = Action { implicit request =>
