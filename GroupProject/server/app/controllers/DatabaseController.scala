@@ -32,7 +32,7 @@ import play.api.mvc.WebSocket
 import actors.SnakeActor
 import actors.SnakeManager
 
-class DatabaseController(protected val dbConfigProvider: DatabaseConfigProvider,
+class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfigProvider,
   mcc: MessagesControllerComponents)(implicit ec: ExecutionContext, system: ActorSystem)
   extends MessagesAbstractController(mcc) with HasDatabaseConfigProvider[JdbcProfile]{
  
