@@ -19,6 +19,10 @@ case class Fruit(x:Int, y:Int)
 
 object SnakeMain {
   
+   val socket = new dom.WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/snakeSock")
+  
+   var direction = "right"
+   
    //random spawn site
    val r = scala.util.Random
 
@@ -37,6 +41,18 @@ object SnakeMain {
    println(player)
 
    def main():Unit = {
+     
+     //sockets
+     socket.onopen = { (e: dom.Event) =>
+       socket.send("Hello! Socket opened!")
+     }
+     
+     socket.onmessage = { (e: dom.MessageEvent) =>
+       val snakeData = JSON.parse(e.data.toString())
+       //Here we call draw snake
+     }
+     
+     
      // Setup
      gc.strokeRect(0,0,canvas.width,canvas.height)
      drawSnake()
@@ -56,6 +72,13 @@ object SnakeMain {
 
 
      //keyboard controls -> changes directions
+     /*dom.window.addEventListener("keydown",(e: dom.KeyboardEvent) => {
+       if (e.keyCode == 37) goLeft()
+       if (e.keyCode == 39) goRight()
+       if (e.keyCode == 38) goUp()
+       if (e.keyCode == 40) goDown()
+     })*/
+     
      dom.window.addEventListener("keydown",(e: dom.KeyboardEvent) => {
        if (e.keyCode == 37) goLeft()
        if (e.keyCode == 39) goRight()
