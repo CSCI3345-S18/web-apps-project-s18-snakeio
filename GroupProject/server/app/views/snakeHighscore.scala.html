@@ -1,5 +1,5 @@
 @* snakeHighscore Template File *@
-@()(implicit request: RequestHeader)
+@(scores:Seq[HighScore])(implicit request: RequestHeader)
 
 @main("Snecc Highscore") {
 	<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/SnakeStyle.css")">
@@ -10,7 +10,12 @@
 	<body>
 		<div>&nbsp</div>
 		<h2>All-Time High Scores</h2>
-		
+		<table border="1">
+		<tr><th>Username</th><th>Score</th>
+		@for(u<-scores){
+			<tr><td>@u.username</td>  <td>@u.score</td>
+		}
+		</table>
 		<div>&nbsp</div>
 		
 		<form id="serverRoom" action="@routes.SnakeController.view" method="GET">

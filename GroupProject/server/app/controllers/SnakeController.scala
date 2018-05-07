@@ -34,7 +34,7 @@ import actors.SnakeManager
 
 case class NewUser(userID: Int, username: String, password: String)
 case class Login(userID: Int, username: String, password: String)
-case class Score(scoreID: Int, userID: Int, score: Int)
+case class Score(username:String, score: Int)
 
 
 class SnakeController @Inject()(cc: ControllerComponents) (implicit system: ActorSystem, mat: Materializer) extends AbstractController(cc){
