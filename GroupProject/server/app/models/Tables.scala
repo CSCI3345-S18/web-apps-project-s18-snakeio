@@ -12,12 +12,11 @@ object Tables {
   }
   
   class HighScores(tag: Tag) extends Table[HighScore](tag, "highScores") {
-    def scoreID = column[Int]("scoreID", O.PrimaryKey)
-    def userID = column[Int]("userID")
+    def username = column[String]("username")
     def score = column[Int]("score")
-    def * = (scoreID, userID, score) <> (HighScore.tupled, HighScore.unapply)
+    def * = (username, score) <> (HighScore.tupled, HighScore.unapply)
   }
   
   val userAccounts = TableQuery[Users]
-  val highscores = TableQuery[HighScores]
+  val highScores = TableQuery[HighScores]
 }

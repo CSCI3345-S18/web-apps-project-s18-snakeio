@@ -1,6 +1,5 @@
 package controllers
 
-
 import javax.inject._
 import java.util.concurrent.atomic.AtomicInteger
 import play.api.mvc._
@@ -31,6 +30,11 @@ import play.api.mvc.ControllerComponents
 import play.api.mvc.WebSocket
 import actors.SnakeActor
 import actors.SnakeManager
+import models.SnakeGameQueries
+import models.Tables.highScores
+import models.Tables.userAccounts
+
+
 
 class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfigProvider,
   mcc: MessagesControllerComponents)(implicit ec: ExecutionContext, system: ActorSystem)
@@ -55,12 +59,10 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
     def login = Action.async { implicit request=>
     LoginForm.bindFromRequest().fold(
       formWithErrors=>{
-        println("heleaux")
         val userFuture = SnakeGameQueries.allUsers(db)
         userFuture.map(users => BadRequest(views.html.snakeLogin(NewUserForm,formWithErrors)))
       },
       loggingin =>{
-        println("help me")
          val loginFuture = SnakeGameQueries.checkCred(loggingin,db)
           loginFuture.map{ cnt =>
           if(cnt == true){
@@ -95,11 +97,12 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
       }
     )
   }
-      def highscores = Action { implicit request =>
-    Ok(views.html.snakeHighscore())
+      def highscores = Action.async { implicit request =>
+        val scoreFuture = SnakeGameQueries.sortScores(db)
+        scoreFuture.map(highScores => Ok(views.html.snakeHighscore(highScores)))//.getOrElse(Future.successful(Redirect(routes.SnakeController.view())))     
   }
  
-  
+      
   def loginPage = Action { implicit request =>
     Ok(views.html.snakeLogin(NewUserForm,LoginForm))
   }

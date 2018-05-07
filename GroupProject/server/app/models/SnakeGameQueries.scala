@@ -3,12 +3,14 @@ package models
 import slick.jdbc.MySQLProfile.api._
 import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
+import controllers.DatabaseController
+import controllers.SnakeController
 import controllers.Login
 import controllers.NewUser
 import controllers.Score
 
 case class User(userID: Int, username: String, password: String)
-case class HighScore(scoreID: Int, userID: Int, score: Int)
+case class HighScore(username:String, score: Int)
 
 object SnakeGameQueries {
   import Tables._
@@ -32,15 +34,22 @@ object SnakeGameQueries {
   def updateScores(sc: Score, db: Database)(implicit ec: ExecutionContext): Future[Int] = {
     // TODO: this is called after a player dies, score is compared to highScore table
     db.run {
-      highscores += HighScore(sc.scoreID, sc.userID, sc.score)
+      highScores += HighScore(sc.username, sc.score)
+      
     }
   }
   
   def getHighScores(db:Database)(implicit ec: ExecutionContext):Future[Seq[HighScore]] = {
      //TODO
      db.run {
-       highscores.sortBy(_.score).take(10).result
+       highScores.sortBy(_.score).take(5).result
      }
+  }
+  
+  def sortScores(db:Database)(implicit ec:ExecutionContext):Future[Seq[HighScore]] = {
+    db.run{
+      highScores.sortBy(_.score.desc).result
+    }
   }
 
 }
