@@ -21,8 +21,8 @@ object SnakeMain {
   val socket = new dom.WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/socket")
   val r = scala.util.Random
   var direction = "right"
-  var id = r.nextInt(999999).toString()//"testID1"
-  //val id = document.getElementById("userID").innerHTML
+  //var id = r.nextInt(999999).toString()//"testID1"
+  val id = document.getElementById("userID").innerHTML
   
   var fruitColor = "#880000"
   var playerColor = "crimson"
