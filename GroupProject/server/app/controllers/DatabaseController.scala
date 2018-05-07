@@ -67,7 +67,10 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
           loginFuture.map{ cnt =>
           if(cnt == true){
             println("hello")
-            Redirect(routes.SnakeController.view()).flashing("message" -> "Login successful.")
+            
+            
+            //Redirect(routes.SnakeController.view()).flashing("message" -> "Login successful.")
+            Redirect(routes.SnakeController.view()).withSession("connection" -> loggingin.username)
             
           }
           else Redirect(routes.DatabaseController.loginPage()).flashing("message" -> "Failed to login.")
