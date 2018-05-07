@@ -9,6 +9,7 @@ import scala.collection.mutable.Queue
 import javax.inject.{Inject, Named}
 import ExecutionContext.Implicits.global
 
+
 case class Snake(id: String, var score: Int, var dir:String, var dead:Boolean, var body:Queue[(Int,Int)])
 case class Fruit(var x:Int, var y:Int)
 
@@ -62,6 +63,7 @@ class SnakeManager extends Actor {
       snakes.foreach(eatFruit)
       var snakeInfo = snakeStrings()
       moveSnakes()
+      snakeCollisions()
       players.foreach(_ ! SnakeActor.SnakeLocations(snakeInfo))
       //println("Number of Players: " + players.length + "; Number of Snakes: " + snakes.length) 
   }
@@ -85,7 +87,12 @@ class SnakeManager extends Actor {
   }
   
   def removeSnake(id: String):Unit = {
+    var tempSnakeList = snakes.filter(_.id == id)
+    var tempSnake = tempSnakeList(0)
     snakes = snakes.filter(_.id != id)
+    
+    //DatabaseController.updateHighScores(tempSnake.id, tempSnake.score)
+    
   }
   
     def moveSnakes():Unit = {
@@ -126,8 +133,8 @@ class SnakeManager extends Actor {
     
     def checkBorders(s:Snake):Unit = {
      //hits border
-     if(s.body.front._1 < 0 || s.body.front._1 > canvasWidth || 
-        s.body.front._2 < 0 || s.body.front._2 > canvasHeight){
+     if(s.body(s.body.length-1)._1 < 0 || s.body(s.body.length-1)._1 > canvasWidth || 
+        s.body(s.body.length-1)._2 < 0 || s.body(s.body.length-1)._2 > canvasHeight){
         
        var id = s.id 
        removeSnake(id)
@@ -136,11 +143,36 @@ class SnakeManager extends Actor {
    }
     
    def eatFruit(s:Snake) = {
-     if ((s.body.front._1 >= fruit.x && (s.body.front._1) <= fruit.x+5) &&
-         (s.body.front._2 >= fruit.y && (s.body.front._2) <= fruit.y+5)) {
+     if ((s.body(s.body.length-1)._1 >= fruit.x && (s.body(s.body.length-1)._1) <= fruit.x+5) &&
+         (s.body(s.body.length-1)._2 >= fruit.y && (s.body(s.body.length-1)._2) <= fruit.y+5)) {
         fruit = Fruit(r.nextInt(80)*5,r.nextInt(80)*5)
         s.body.enqueue((s.body.last._1, s.body.last._2 + 5))
         s.score += 500
+     }
+   }
+   
+   def snakeCollisions():Unit = {
+     var deadSnakes = List[String]()
+     for(i <- 0 until snakes.length){      
+       for(j <- 0 until snakes.length){
+         if(snakes(i).id != snakes(j).id){
+    
+           val curPlayer = snakes(i)
+           val enemy = snakes(j)
+           
+           for(k <- 1 until snakes(j).body.length){
+             if(curPlayer.body(curPlayer.body.length-1) == enemy.body(k)){
+               deadSnakes ::= curPlayer.id
+               println("Snake Collision! Died: " + curPlayer.id)
+             }
+           }
+           
+         }
+       }
+     }
+     for(x <- 0 until deadSnakes.length){
+       removeSnake(deadSnakes(x))
+       newSnake(deadSnakes(x))
      }
    }
   

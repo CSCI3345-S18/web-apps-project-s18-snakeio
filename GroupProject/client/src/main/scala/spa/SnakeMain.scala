@@ -21,8 +21,10 @@ object SnakeMain {
   val socket = new dom.WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/socket")
   val r = scala.util.Random
   var direction = "right"
-  var id = r.nextInt(999999).toString()//"testID1"
-  //val id = document.getElementById("userID").innerHTML
+  //var id = r.nextInt(999999).toString()//"testID1"
+  val id = document.getElementById("userID").innerHTML
+  
+  var highestDeathScore = document.getElementById("highDeathScore").asInstanceOf[html.Input].value.toInt
   
   var fruitColor = "#880000"
   var playerColor = "crimson"
@@ -50,9 +52,7 @@ object SnakeMain {
 
 
    def main():Unit = {
-     
-    
-    
+        
      //sockets
      //socket.onopen = { (e: dom.Event) =>
      socket.addEventListener("open",(event: Event) => {
@@ -123,6 +123,11 @@ object SnakeMain {
        var cutString = snakeList(i).split(",")
        var snakeId = cutString(0)
        var snakeScore = cutString(1)
+       
+       if(snakeId == id && snakeScore.toInt > highestDeathScore){
+         //highestDeathScore = snakeScore
+         document.getElementById("highDeathScore").asInstanceOf[html.Input].value = snakeScore 
+       }
        
        // DISPLAY SCORE!!!
        // y -coordinates will change!

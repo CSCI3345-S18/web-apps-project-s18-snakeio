@@ -51,10 +51,16 @@ class SnakeController @Inject()(cc: ControllerComponents) (implicit system: Acto
     }
   }
   
-  def view = Action { implicit request =>
+  def view() = Action { implicit request =>
+    /*
     val r = scala.util.Random
     val tmpUserName = "" + r.nextInt(100)
-     Ok(views.html.snakeCanvas(tmpUserName))
+     Ok(views.html.snakeCanvas(username))
+     */
+    
+    request.session.get("connection").map { userName =>
+      Ok(views.html.snakeCanvas(userName))
+    }.getOrElse(Redirect(routes.DatabaseController.login()))
   }
 
   def snakeCanvas = Action { implicit request =>

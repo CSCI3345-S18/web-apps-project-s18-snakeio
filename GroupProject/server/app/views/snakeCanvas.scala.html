@@ -7,14 +7,18 @@
 
    <h2>Snake Game!</h2>
    
+   
    <div>&nbsp</div>
    Welcome snake friend, <span id="userID">@userID</span>
    <div>&nbsp</div>
    
    <canvas id = "snakeCanvas" width = "500" height = "500"></canvas>
    
-   <form id="logout" action="@routes.DatabaseController.logout" method="GET">
-			<button type="submit">Logout</button>
+   <form id="logout" action="@routes.DatabaseController.logout()" method="POST">
+   @helper.CSRF.formField
+   		<input name="highDeathScore" id="highDeathScore" type="hidden" value="0">
+   		<input name="id" id="id" type="hidden" value=@userID>
+   		<button type="submit">Logout</button>
 	</form>
 
 }
