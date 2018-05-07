@@ -5,6 +5,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import controllers.Login
 import controllers.NewUser
+import controllers.Score
 
 case class User(userID: Int, username: String, password: String)
 case class HighScore(scoreID: Int, userID: Int, score: Int)
@@ -27,7 +28,7 @@ object SnakeGameQueries {
       userAccounts.filter(_.username === user.username).filter(_.password === user.password).exists.result
     }
   }
- /* 
+  
   def updateScores(sc: Score, db: Database)(implicit ec: ExecutionContext): Future[Int] = {
     // TODO: this is called after a player dies, score is compared to highScore table
     db.run {
@@ -38,8 +39,8 @@ object SnakeGameQueries {
   def getHighScores(db:Database)(implicit ec: ExecutionContext):Future[Seq[HighScore]] = {
      //TODO
      db.run {
-       highscores.sortWith(_ > _).take(10)
+       highscores.sortBy(_.score).take(10).result
      }
   }
-*/
+
 }

@@ -12,6 +12,7 @@
 		<div>&nbsp</div>
 		<h2>Login In:</h2>
 		@helper.form(action = helper.CSRF(routes.DatabaseController.login)) {
+	<input type="hidden" name="userID" value=0 />
 	  @helper.inputText(LoginForm("username"))
 	  @helper.inputPassword(LoginForm("password"))
 	  <input type="submit" value="Submit">
@@ -20,6 +21,7 @@
 	
 		<h2>Don't have an account? Register:</h2>
 		@helper.form(action = helper.CSRF(routes.DatabaseController.addUser)) {
+		<input type="hidden" name="userID" value=0 />
 	 	@helper.inputText(UserForm("username"))
 	  	@helper.inputPassword(UserForm("password"))
 	  	<input type="submit" value="Submit">
