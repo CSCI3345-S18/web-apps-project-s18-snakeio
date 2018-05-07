@@ -98,7 +98,7 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
     )
   }
       def highscores = Action.async { implicit request =>
-        val scoreFuture = SnakeGameQueries.sortScores(db)
+        val scoreFuture = SnakeGameQueries.getHighScores(db)
         scoreFuture.map(highScores => Ok(views.html.snakeHighscore(highScores)))//.getOrElse(Future.successful(Redirect(routes.SnakeController.view())))     
   }
  

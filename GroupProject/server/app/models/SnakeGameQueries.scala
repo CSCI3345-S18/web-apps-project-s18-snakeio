@@ -42,7 +42,7 @@ object SnakeGameQueries {
   def getHighScores(db:Database)(implicit ec: ExecutionContext):Future[Seq[HighScore]] = {
      //TODO
      db.run {
-       highScores.sortBy(_.score).take(5).result
+       highScores.sortBy(_.score.desc).take(5).result
      }
   }
   
