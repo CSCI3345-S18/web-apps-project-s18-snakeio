@@ -25,7 +25,7 @@ class SnakeManager extends Actor {
   
   
   private var canvasWidth = 400
-  private var canvasHeight = 400
+  private var canvasHeight = 500
   
   val r = scala.util.Random
   var fruit = Fruit(r.nextInt(80)*5,r.nextInt(80)*5)

@@ -52,7 +52,9 @@ class SnakeController @Inject()(cc: ControllerComponents) (implicit system: Acto
   }
   
   def view = Action { implicit request =>
-     Ok(views.html.snakeCanvas())
+    val r = scala.util.Random
+    val tmpUserName = "" + r.nextInt(100)
+     Ok(views.html.snakeCanvas(tmpUserName))
   }
 
   def snakeCanvas = Action { implicit request =>

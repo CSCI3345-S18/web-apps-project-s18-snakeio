@@ -22,10 +22,15 @@ object SnakeMain {
   val r = scala.util.Random
   var direction = "right"
   var id = r.nextInt(999999).toString()//"testID1"
-
+  //val id = document.getElementById("userID").innerHTML
+  
   var fruitColor = "#880000"
-  var playerColor = "#008800"
+  var playerColor = "crimson"
   var enemyColor = "#000088"
+  
+  var scoreXCoord = 410
+  var scoreYCoord = 20
+  var scoreYCoordOffset = 60
   
   var sarahColor = "#008080" //It's a lovely color but I need obnoxious ones atm
   
@@ -46,6 +51,8 @@ object SnakeMain {
 
    def main():Unit = {
      
+    
+    
      //sockets
      //socket.onopen = { (e: dom.Event) =>
      socket.addEventListener("open",(event: Event) => {
@@ -70,50 +77,21 @@ object SnakeMain {
        if (e.keyCode == 38) direction = "up"
        if (e.keyCode == 40) direction = "down"
        socket.send(id + "," + direction)
+       
      })
-     
-     
-     // Setup
-     //gc.strokeRect(0,0,canvas.width,canvas.height)
-     //drawSnake()
-
-     //interval
-//     var counter = 0
-//     dom.window.setInterval(() => {
-//        if(!dead){
-//           // sending snake JSON to Actor
-//           val s = js.Dynamic.literal(dir = player.dir, body = player.body)
-//           println("s: " + s)
-//           socket.send(JSON.stringify(s))
-//           println("sending " + JSON.stringify(s))
-//
-//           counter += 1
-//           //movePlayer()
-//           checkHit()
-//           eatFruit()
-//           update()
-//           if(counter%50 == 0) score += 20
-//        }
-//     },40.0)
-
-
-     //keyboard controls -> changes directions
-     /*dom.window.addEventListener("keydown",(e: dom.KeyboardEvent) => {
-       if (e.keyCode == 37) goLeft()
-       if (e.keyCode == 39) goRight()
-       if (e.keyCode == 38) goUp()
-       if (e.keyCode == 40) goDown()
-     })*/
-     
-
      
    }
 
-   def update(s: String) = {
-//   if (!dead) {
+   def update(s: String) = { 
        println("Recieved String: " + s)
        gc.clearRect(0,0,canvas.width,canvas.height)
        gc.strokeRect(0,0,canvas.width,canvas.height)
+       
+       //displayScore(playerScore)
+       gc.fillStyle = "black"
+       gc.font = "30px Arial"
+       gc.fillText("Scores", 410, 50)
+       
        drawSnake(s)
        //draw fruit
        gc.fillStyle = "#008000"
@@ -122,14 +100,15 @@ object SnakeMain {
          gc.fillStyle = "#000000"
          gc.fillRect(0, 0, canvas.width,canvas.height)
        }
-       //gc.fillRect(fruit.x,fruit.y,5,5)
-//     }
-//     else {
-//       gc.fillStyle = "#000000"
-//       gc.fillRect(0,0,canvas.width,canvas.height)
-//     }
    }
-
+   
+   //shows score
+   def displayScore(id: String, score: String, x: Int, y: Int) = {
+     gc.fillStyle = "black"
+     gc.font = "12px Arial"
+     gc.fillText(id + ": " + score, x, y)
+   }
+   
    //draws snake
    def drawSnake(s: String) = {
      //s is the string containing all snakes (And the fruit)
@@ -144,6 +123,10 @@ object SnakeMain {
        var cutString = snakeList(i).split(",")
        var snakeId = cutString(0)
        var snakeScore = cutString(1)
+       
+       // DISPLAY SCORE!!!
+       // y -coordinates will change!
+       displayScore(snakeId, snakeScore, scoreXCoord, scoreYCoord*i + scoreYCoordOffset)
        
        if(id == snakeId){
          gc.fillStyle = playerColor

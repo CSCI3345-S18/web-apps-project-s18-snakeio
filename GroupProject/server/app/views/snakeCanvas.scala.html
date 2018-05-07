@@ -1,11 +1,15 @@
 
 @* snakeGame Canvas File *@
 
-@()(implicit request: RequestHeader)
+@(userID: String)(implicit request: RequestHeader)
 
 @main("Snake Time!") {
 
    <h2>Snake Game!</h2>
+   
+   <div>&nbsp</div>
+   Welcome snake friend, <span id="userID">@userID</span>
+   <div>&nbsp</div>
    
    <canvas id = "snakeCanvas" width = "500" height = "500"></canvas>
 
