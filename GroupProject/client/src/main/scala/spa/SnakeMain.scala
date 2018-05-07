@@ -18,13 +18,18 @@ case class Fruit(x:Int, y:Int)
 
 object SnakeMain {
   
-   val socket = new dom.WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/socket")
+  val socket = new dom.WebSocket("ws://" + window.location.hostname + ":" + window.location.port + "/socket")
+  val r = scala.util.Random
+  var direction = "right"
+  var id = r.nextInt(999999).toString()//"testID1"
+
+  var fruitColor = "#880000"
+  var playerColor = "#008800"
+  var enemyColor = "#000088"
   
-   var direction = "right"
-   var id = "1"
-   
-   //random spawn site
-   val r = scala.util.Random
+  var sarahColor = "#008080" //It's a lovely color but I need obnoxious ones atm
+  
+  var dead = false
 
    //global vals
 //   var x = 5*r.nextInt(80) //400/5 = 80
@@ -44,7 +49,7 @@ object SnakeMain {
      //sockets
      //socket.onopen = { (e: dom.Event) =>
      socket.addEventListener("open",(event: Event) => {
-       socket.send("Hello! Socket opened!")
+       socket.send("Open socket")
      })
      
      //socket.onmessage = { (e: dom.MessageEvent) =>
@@ -55,8 +60,7 @@ object SnakeMain {
        //Here we call draw snake
        
        update(event.data.toString())
-       socket.send(id + "," + direction)
-       println("After socket send")
+       //socket.send(id + "," + direction)
        
      })
      
@@ -113,6 +117,11 @@ object SnakeMain {
        drawSnake(s)
        //draw fruit
        gc.fillStyle = "#008000"
+       
+       if(dead){
+         gc.fillStyle = "#000000"
+         gc.fillRect(0, 0, canvas.width,canvas.height)
+       }
        //gc.fillRect(fruit.x,fruit.y,5,5)
 //     }
 //     else {
@@ -123,17 +132,26 @@ object SnakeMain {
 
    //draws snake
    def drawSnake(s: String) = {
-//     for(i <- 0 until player.body.length){
-//       var temp = player.body.get(i).get
-//       gc.fillRect(temp._1, temp._2, 4,4)
-//     }
+     //s is the string containing all snakes (And the fruit)
      
-     gc.fillStyle = "#008080"
-     var snakeList = s.split(" ")
+     
+     var snakeList = s.split(" ") //Contains a list of strings. EACH string is one snake
      print("Draw Snakes: ")
-     for(i <- 0 until snakeList.length){
+     var fruit = snakeList(0)
+     gc.fillStyle = fruitColor
+     gc.fillRect(fruit.split(":")(0).toDouble, fruit.split(":")(1).toDouble, 9,9)
+     for(i <- 1 until snakeList.length){
        var cutString = snakeList(i).split(",")
-       for(j <- 0 until cutString.length){
+       var snakeId = cutString(0)
+       var snakeScore = cutString(1)
+       
+       if(id == snakeId){
+         gc.fillStyle = playerColor
+       } else {
+         gc.fillStyle = enemyColor
+       }
+       
+       for(j <- 2 until cutString.length){
          print(cutString(j) + " ")
          var x = cutString(j).split(":")(0).toInt
          var y = cutString(j).split(":")(1).toInt
