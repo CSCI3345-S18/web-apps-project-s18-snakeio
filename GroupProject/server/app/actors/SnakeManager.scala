@@ -9,6 +9,7 @@ import scala.collection.mutable.Queue
 import javax.inject.{Inject, Named}
 import ExecutionContext.Implicits.global
 
+
 case class Snake(id: String, var score: Int, var dir:String, var dead:Boolean, var body:Queue[(Int,Int)])
 case class Fruit(var x:Int, var y:Int)
 
@@ -86,7 +87,12 @@ class SnakeManager extends Actor {
   }
   
   def removeSnake(id: String):Unit = {
+    var tempSnakeList = snakes.filter(_.id == id)
+    var tempSnake = tempSnakeList(0)
     snakes = snakes.filter(_.id != id)
+    
+    //DatabaseController.updateHighScores(tempSnake.id, tempSnake.score)
+    
   }
   
     def moveSnakes():Unit = {

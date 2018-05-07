@@ -80,7 +80,7 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
       }
     )
   }
-  
+    
      def addUser = Action.async{ implicit request =>
     NewUserForm.bindFromRequest().fold(
       formWithErrors=>{
@@ -110,8 +110,32 @@ class DatabaseController @Inject()(protected val dbConfigProvider: DatabaseConfi
     Ok(views.html.snakeLogin(NewUserForm,LoginForm))
   }
   
-  def logout = Action { implicit request =>
+  def logout() = Action.async { implicit request =>
     //TODO: logout stuff with session variables!!
-    Ok(views.html.snakeLogin(NewUserForm,LoginForm))
+    //Ok(views.html.snakeLogin(NewUserForm,LoginForm))
+    
+      var username = request.session.get("connection").get
+      request.body.asFormUrlEncoded match {
+        case Some(formData) =>
+          val highscore = formData("highDeathScore").head.toInt
+          val score = Score(username, highscore)
+          
+          //send q
+          val res = SnakeGameQueries.updateScores(score, db)
+          res.map( succ => Redirect(routes.DatabaseController.loginPage()).withNewSession)
+          
+      }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+

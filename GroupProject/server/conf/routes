@@ -8,7 +8,7 @@ GET		/snakeGameMain				controllers.DatabaseController.loginPage
 POST 	/snakeGameMain				controllers.DatabaseController.addUser
 GET		/loggingin					controllers.DatabaseController.login
 GET		/snakeHighscore				controllers.DatabaseController.highscores
-GET 	/newSession					controllers.DatabaseController.logout
+POST 	/newSession					controllers.DatabaseController.logout
 GET     /snakeGame                  controllers.SnakeController.view
 GET     /snakeCanvas                controllers.SnakeController.snakeCanvas
 

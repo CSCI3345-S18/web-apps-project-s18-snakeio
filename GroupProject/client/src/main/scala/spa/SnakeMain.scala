@@ -24,6 +24,8 @@ object SnakeMain {
   //var id = r.nextInt(999999).toString()//"testID1"
   val id = document.getElementById("userID").innerHTML
   
+  var highestDeathScore = document.getElementById("highDeathScore").asInstanceOf[html.Input].value.toInt
+  
   var fruitColor = "#880000"
   var playerColor = "crimson"
   var enemyColor = "#000088"
@@ -123,6 +125,11 @@ object SnakeMain {
        var cutString = snakeList(i).split(",")
        var snakeId = cutString(0)
        var snakeScore = cutString(1)
+       
+       if(snakeId == id && snakeScore.toInt > highestDeathScore){
+         //highestDeathScore = snakeScore
+         document.getElementById("highDeathScore").asInstanceOf[html.Input].value = snakeScore 
+       }
        
        // DISPLAY SCORE!!!
        // y -coordinates will change!

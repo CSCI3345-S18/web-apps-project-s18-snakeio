@@ -14,6 +14,7 @@ case class HighScore(username:String, score: Int)
 
 object SnakeGameQueries {
   import Tables._
+  
   def allUsers(db:Database)(implicit ec:ExecutionContext):Future[Seq[User]] = {
     db.run(userAccounts.result)
   }
