@@ -12,6 +12,10 @@
    <div>&nbsp</div>
    
    <canvas id = "snakeCanvas" width = "500" height = "500"></canvas>
+   
+   <form id="logout" action="@routes.DatabaseController.logout" method="GET">
+			<button type="submit">Logout</button>
+	</form>
 
 }
    @scalajs.html.scripts("CSCI3345-S18-client",routes.Assets.versioned(_).toString, name => getClass.getResource(s"/public/$name") != null)
