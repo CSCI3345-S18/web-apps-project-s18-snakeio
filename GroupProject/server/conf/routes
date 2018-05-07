@@ -4,8 +4,8 @@
 
 
 ## Snake Game!!!
-GET		/snakeGameMain				controllers.DatabaseController.loginPage
-POST 	/snakeGameMain				controllers.DatabaseController.addUser
+GET		/							controllers.DatabaseController.loginPage
+POST 	/							controllers.DatabaseController.addUser
 GET		/loggingin					controllers.DatabaseController.login
 GET		/snakeHighscore				controllers.DatabaseController.highscores
 POST 	/newSession					controllers.DatabaseController.logout
@@ -15,7 +15,7 @@ GET     /snakeCanvas                controllers.SnakeController.snakeCanvas
 GET		/socket						controllers.SnakeController.socket
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index
+GET     /index                        controllers.HomeController.index
 GET     /message                    controllers.AsyncController.message
 
 # Map static resources from the /public folder to the /assets URL path
