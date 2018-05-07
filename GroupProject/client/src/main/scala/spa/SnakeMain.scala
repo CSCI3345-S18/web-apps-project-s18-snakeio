@@ -52,9 +52,7 @@ object SnakeMain {
 
 
    def main():Unit = {
-     
-    
-    
+        
      //sockets
      //socket.onopen = { (e: dom.Event) =>
      socket.addEventListener("open",(event: Event) => {
